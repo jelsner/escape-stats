@@ -1,0 +1,34 @@
+---
+title: "Escape Stats"
+output: html_document
+---
+
+Escape vs DDC
+
+Winter league 2018-19: DDC
+Summer league 2019: Escape
+
+Input data
+```{r}
+JimW <- c(1, 6, -3, 4, 9, -5, -6, 2, -3, 7, 2, 4, 5, 3, 1, 4, 1, -6, -2, -3, 3, 2, -3, 2, -7, 2, 9, 8, 3, -3, 3)
+JimS <- c(2, 8, -4, -4, 3, 7, 2, 5, 4, 4, 3, 2, 3, -3, -2, 6, 5, 4, 6, -2, 2, -2, 5, 4, -5, 3, 4, -3, -2, 2, -2, -4, -6, 4)
+JordanW <- c(-6, 4, 3,	4, 9, -5, -6, 2, -3, 7, 4, -5, 6, 2, 3, -6, -2, 3, -2, 5, -2)
+JordanS <- c(-8, 5, 3, -4, 3, -7, -2, 5, -2, 2, -1, -2, -3, 3, 2, 8, -6, 4, 8, 2, 5, -4, 5, -2, 3, -4, 4, -2, 2, 2, -2, 6, -4)
+df <- data.frame(Player = rep(c("Jim", "Jordan"), times = c(length(JimW) + length(JimS),
+                                                             length(JordanW) + length(JordanS))),
+                 Game = c(rep(c("DDC", "Escape"), times = c(length(JimW), length(JimS))),
+                          rep(c("DDC", "Escape"), times = c(length(JordanW), length(JordanS)))),
+                 PointDifference = c(JimW, JimS, JordanW, JordanS))
+```
+
+```{r}
+library(dplyr)
+
+df %>% 
+  group_by(Player, Game) %>%
+  summarize(NumberGames = n(),
+            AvgPD = mean(PointDifference),
+            VarPD = var(PointDifference),
+            SmallPD = sum(abs(PointDifference) <= 2)/NumberGames,
+            LargePD = sum(abs(PointDifference) >= 5)/NumberGames)
+```
